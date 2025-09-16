@@ -7,22 +7,26 @@
     <title>Harmoniq</title>
     
     <!-- External Resources -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         /* CSS Variables */
         :root {
-            --bg-dark: #121212;
-            --bg-card: #181818;
-            --bg-card-hover: #282828;
+            --bg-dark: #0a0a1a;
+            --bg-card: rgba(255, 255, 255, 0.07);
+            --bg-card-hover: rgba(255, 255, 255, 0.12);
             --text-primary: #ffffff;
-            --text-secondary: #b3b3b3;
-            --highlight: #1db954;
-            --highlight-hover: #1ed760;
-            --progress-bg: #535353;
-            --sidebar-bg: #000000;
-            --now-playing-bg: #090909;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --highlight: #00e6cc;
+            --highlight-hover: #00ffea;
+            --highlight-glow: 0 0 15px rgba(0, 230, 204, 0.5);
+            --progress-bg: rgba(255, 255, 255, 0.2);
+            --sidebar-bg: rgba(15, 15, 35, 0.7);
+            --now-playing-bg: rgba(10, 10, 30, 0.85);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
         }
 
         /* Base Styles */
@@ -31,9 +35,7 @@
             margin: 0;
             padding: 0;
         }
-.logo1{
-    height: 20px;
-}
+
         body {
             font-family: 'Montserrat', sans-serif;
             background: var(--bg-dark);
@@ -42,6 +44,15 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            position: relative;
+        }
+
+        /* Particle Background */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
         }
 
         /* Layout */
@@ -56,10 +67,19 @@
                 "nowbar nowbar";
         }
 
+        /* Glassmorphism effect base */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            border-radius: 16px;
+        }
+
         /* Header Styles */
         header {
             grid-area: header;
-            background: rgba(0, 0, 0, 0.5);
             padding: 16px 32px;
             display: flex;
             align-items: center;
@@ -67,98 +87,96 @@
             position: sticky;
             top: 0;
             z-index: 100;
-            backdrop-filter: blur(10px);
         }
 
         .search-container {
             flex: 1;
             max-width: 500px;
             position: relative;
+            display: flex;
+            align-items: center;
         }
 
         .search-container input {
             width: 100%;
-            padding: 12px 40px 12px 40px;
+            padding: 14px 50px 14px 45px;
             border-radius: 50px;
             border: none;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             color: var(--text-primary);
             font-size: 14px;
             outline: none;
             transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .search-container input:focus {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 0 15px rgba(0, 230, 204, 0.3);
         }
 
         .search-container i {
             position: absolute;
-            left: 15px;
+            left: 18px;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-secondary);
+            z-index: 2;
         }
 
-        .user-controls {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+        .search-button {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--highlight);
+    border: none;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* keep icon centered */
+}
 
-        /* Button Styles */
-        .btn {
-            padding: 10px 20px;
-            border-radius: 50px;
-            border: none;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: var(--highlight);
-            color: white;
-        }
-
-        .btn-primary:hover {
+        .search-button:hover {
             background: var(--highlight-hover);
-            transform: scale(1.05);
+            transform: translateY(-50%) scale(1.1);
         }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--text-secondary);
-        }
-
-        .btn-secondary:hover {
-            color: var(--text-primary);
-            border-color: var(--text-primary);
-        }
-
+.search-button i {
+    color: #ffffff;
+    position: relative;  /* allow movement */
+    left: 2px;           /* start centered */
+    padding-bottom: 8px;
+    transition: all 0.3s; /* smooth movement */
+}
         /* Sidebar Styles */
         .sidebar {
             grid-area: sidebar;
             background: var(--sidebar-bg);
             padding: 24px 0;
             overflow-y: auto;
+            backdrop-filter: blur(15px);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 10;
         }
 
         .logo {
-            padding: 0 24px 24px;
             font-size: 24px;
             font-weight: 700;
             color: var(--text-primary);
             display: flex;
-            align-items: center;
-            gap: 10px;
-            height: 50px;
+            gap: 12px;
+            height: 30px ;
         }
 
+
         .logo i {
-            color: var(--highlight);
+            color: black;
+            font-size: 16px;
         }
 
         .sidebar-nav {
@@ -167,83 +185,31 @@
         }
 
         .sidebar-nav li {
-            padding: 10px 24px;
+            padding: 12px 24px;
             display: flex;
             align-items: center;
             gap: 16px;
             color: var(--text-secondary);
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: all 0.2s;
+            margin: 8px 12px;
+            border-radius: 12px;
         }
 
-        .sidebar-nav li:hover,
+        .sidebar-nav li:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
         .sidebar-nav li.active {
             color: var(--text-primary);
+            background: rgba(0, 230, 204, 0.15);
+            box-shadow: 0 0 10px rgba(0, 230, 204, 0.2);
         }
 
-        .sidebar-nav li.active {
-            border-left: 4px solid var(--highlight);
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .sidebar-section {
-            padding: 16px 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .sidebar-section h3 {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 16px;
-            color: var(--text-secondary);
-        }
-
-        .queue-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 8px 0;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background 0.2s;
-        }
-
-        .queue-item:hover {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .queue-item-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 4px;
-            background: #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .queue-item-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .queue-item-title {
-            font-size: 14px;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .queue-item-artist {
-            font-size: 12px;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        .sidebar-nav li.active i {
+            color: var(--highlight);
         }
 
         /* Main Content Styles */
@@ -251,13 +217,30 @@
             grid-area: main;
             padding: 24px 32px;
             overflow-y: auto;
-            background: linear-gradient(to bottom, #3a1c71, #181818 400px);
+            background: linear-gradient(to bottom, rgba(58, 28, 113, 0.7), rgba(24, 24, 24, 0.8) 400px);
+            position: relative;
+        }
+
+        .main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 240px;
+            background: linear-gradient(135deg, rgba(94, 44, 182, 0.5), rgba(0, 230, 204, 0.4));
+            z-index: -1;
+            border-radius: 0 0 20px 20px;
         }
 
         .section-title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff, var(--highlight));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 230, 204, 0.3);
         }
 
         .results-grid {
@@ -268,15 +251,36 @@
 
         .track-card {
             background: var(--bg-card);
-            border-radius: 8px;
-            padding: 16px;
-            transition: background 0.3s;
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .track-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 100%;
+            background: linear-gradient(rgba(0, 230, 204, 0.1), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
         }
 
         .track-card:hover {
             background: var(--bg-card-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .track-card:hover::before {
+            opacity: 1;
         }
 
         .track-card:hover .play-btn {
@@ -287,25 +291,37 @@
         .track-image {
             width: 100%;
             aspect-ratio: 1;
-            border-radius: 4px;
-            background: #333;
+            border-radius: 12px;
             margin-bottom: 16px;
             position: relative;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .track-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .track-card:hover .track-image img {
+            transform: scale(1.05);
         }
 
         .track-image i {
             font-size: 40px;
             color: var(--text-secondary);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
         }
 
         .play-btn {
             position: absolute;
-            right: 8px;
-            bottom: 8px;
+            right: 12px;
+            bottom: 12px;
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -317,10 +333,18 @@
             opacity: 0;
             transition: all 0.3s;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 230, 204, 0.4);
         }
 
         .track-info {
             min-width: 0;
+            z-index: 1;
+            position: relative;
         }
 
         .track-title {
@@ -329,7 +353,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
 
         .track-artist {
@@ -345,11 +369,12 @@
             grid-area: nowbar;
             background: var(--now-playing-bg);
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 16px;
+            padding: 16px 24px;
             display: flex;
             align-items: center;
             gap: 16px;
             z-index: 100;
+            backdrop-filter: blur(15px);
         }
 
         .now-playing {
@@ -363,17 +388,24 @@
         .now-playing-img {
             width: 56px;
             height: 56px;
-            border-radius: 4px;
-            background: #333;
+            border-radius: 12px;
+            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
 
         .now-playing-img i {
-            font-size: 24px;
+            font-size: 20px;
             color: var(--text-secondary);
+        }
+
+        .now-playing-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .now-playing-info {
@@ -417,48 +449,60 @@
             color: var(--text-secondary);
             cursor: pointer;
             font-size: 16px;
-            transition: color 0.2s;
+            transition: all 0.2s;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
         }
 
         .control-button:hover {
             color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .control-button.play-pause {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            background: var(--text-primary);
+            background: var(--highlight);
             color: black;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: var(--highlight-glow);
         }
 
         .control-button.play-pause:hover {
             transform: scale(1.05);
+            background: var(--highlight-hover);
+            box-shadow: 0 0 20px rgba(0, 230, 204, 0.7);
         }
 
         .progress-container {
             width: 100%;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .progress-time {
             font-size: 11px;
             color: var(--text-secondary);
-            min-width: 40px;
+            min-width: 35px;
+            font-variant-numeric: tabular-nums;
         }
 
         .progress-bar {
             flex: 1;
             height: 4px;
             background: var(--progress-bg);
-            border-radius: 2px;
+            border-radius: 4px;
             cursor: pointer;
             position: relative;
+            overflow: hidden;
         }
 
         .progress-bar:hover .progress-fill {
@@ -466,12 +510,12 @@
         }
 
         .progress-bar:hover .progress-handle {
-            display: block;
+            opacity: 1;
         }
 
         .progress-fill {
             height: 100%;
-            border-radius: 2px;
+            border-radius: 4px;
             background: var(--text-secondary);
             width: 0;
             position: relative;
@@ -487,24 +531,32 @@
             right: -6px;
             top: 50%;
             transform: translateY(-50%);
-            display: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
         }
 
         .volume-controls {
             display: flex;
             align-items: center;
             gap: 8px;
-            width: 30%;
+            width: 20%;
             justify-content: flex-end;
+            min-width: 120px;
         }
 
         .volume-icon {
             color: var(--text-secondary);
             font-size: 16px;
+            cursor: pointer;
+        }
+
+        .volume-icon:hover {
+            color: var(--text-primary);
         }
 
         .volume-bar {
-            width: 100px;
+            width: 80px;
             height: 4px;
             background: var(--progress-bg);
             border-radius: 2px;
@@ -542,11 +594,13 @@
         /* Lyrics Section */
         .lyrics-container {
             background: var(--bg-card);
-            border-radius: 8px;
+            border-radius: 16px;
             padding: 20px;
             margin-top: 24px;
             max-height: 300px;
             overflow-y: auto;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .lyrics-header {
@@ -559,6 +613,9 @@
         .lyrics-title {
             font-size: 18px;
             font-weight: 600;
+            background: linear-gradient(135deg, #fff, var(--highlight));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .lyrics-content {
@@ -569,12 +626,60 @@
             font-size: 14px;
         }
 
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
         /* Utilities */
         .hidden {
             display: none;
         }
 
+        /* Animation for playing state */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 230, 204, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 230, 204, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 230, 204, 0); }
+        }
+
+        .playing {
+            animation: pulse 2s infinite;
+        }
+
         /* Responsive */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 200px 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            }
+            
+            .nowbar {
+                padding: 14px 20px;
+            }
+            
+            .volume-controls {
+                width: 25%;
+            }
+        }
+
         @media (max-width: 768px) {
             .container {
                 grid-template-columns: 1fr;
@@ -589,24 +694,126 @@
             
             .results-grid {
                 grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 16px;
+            }
+            
+            .main {
+                padding: 16px;
+            }
+            
+            .nowbar {
+                padding: 12px 16px;
+                flex-wrap: wrap;
+            }
+            
+            .now-playing {
+                width: 100%;
+                min-width: auto;
+                margin-bottom: 10px;
+                justify-content: center;
+            }
+            
+            .player-controls {
+                order: 3;
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .volume-controls {
+                width: 100%;
+                justify-content: center;
+                order: 2;
+                margin: 10px 0;
+            }
+            
+            header {
+                padding: 16px;
+            }
+            
+            .search-container {
+                max-width: 100%;
             }
         }
+
+        @media (max-width: 480px) {
+            .results-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            
+            .track-card {
+                padding: 16px;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .control-buttons {
+                gap: 12px;
+            }
+            
+            .control-button {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
+            
+            .control-button.play-pause {
+                width: 36px;
+                height: 36px;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            .container {
+                grid-template-columns: 260px 1fr;
+            }
+            
+            .results-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+                gap: 28px;
+            }
+            
+            .nowbar {
+                padding: 20px 32px;
+            }
+            
+            .now-playing-img {
+                width: 64px;
+                height: 64px;
+            }
+            
+            .control-button {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+            
+            .control-button.play-pause {
+                width: 48px;
+                height: 48px;
+            }
+        }
+    
     </style>
 </head>
 <body>
+    <!-- Particle Background -->
+    <div id="particles-js"></div>
+    
     <div class="container">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar glass">
             <div class="logo">
-                <img src="logo.png" alt="Chaya Logo" class="logo1">
+                <div class="logo-img">
+                     <img src="logo.png" alt="Logo" class="logo">
+                </div>
                 <span>Harmoniq</span>
             </div>
             <ul class="sidebar-nav">
                 <li class="active"><i class="fas fa-home"></i> Home</li>
+                <li><i class="fas fa-search"></i> Search</li>
             </ul>
-            <div class="sidebar-section">
-                <!-- Queue items would go here -->
-            </div>
         </aside>
 
         <!-- Main Content -->
@@ -615,9 +822,9 @@
                 <div class="search-container">
                     <i class="fas fa-search"></i>
                     <input type="text" id="search-input" placeholder="Search for songs, artists, or albums"/>
-                </div>
-                <div class="user-controls">
-                    <!-- User controls would go here -->
+                    <button class="search-button" id="search-button">
+                        <i class="fas fa-search"></i>
+                    </button>
                 </div>
             </header>
 
@@ -640,7 +847,7 @@
         </main>
 
         <!-- Now Playing Bar -->
-        <footer class="nowbar">
+        <footer class="nowbar glass">
             <div class="now-playing">
                 <div class="now-playing-img" id="now-playing-img">
                     <i class="fas fa-music"></i>
@@ -653,8 +860,20 @@
 
             <div class="player-controls">
                 <div class="control-buttons">
+                    <button class="control-button">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-button">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
                     <button class="control-button play-pause" id="play-pause-btn">
                         <i class="fas fa-play"></i>
+                    </button>
+                    <button class="control-button">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-button">
+                        <i class="fas fa-redo"></i>
                     </button>
                 </div>
                 <div class="progress-container">
@@ -668,7 +887,11 @@
             </div>
 
             <div class="volume-controls">
-                <!-- Volume controls would go here -->
+                <i class="fas fa-volume-up volume-icon"></i>
+                <div class="volume-bar">
+                    <div class="volume-fill"></div>
+                    <div class="volume-handle"></div>
+                </div>
             </div>
         </footer>
     </div>
@@ -676,179 +899,206 @@
     <!-- YouTube IFrame API -->
     <script src="https://www.youtube.com/iframe_api"></script>
     
-    <script src="https://www.youtube.com/iframe_api"></script>
-<script>
-// Replace with your YouTube Data API v3 key
-const API_KEY = "AIzaSyBFMjZRjFVQ70iYBAujYJSqUJShqSpAwc8";
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        // Initialize particles.js
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', {
+                particles: {
+                    number: { value: 80, density: { enable: true, value_area: 800 } },
+                    color: { value: "#00e6cc" },
+                    shape: { type: "circle" },
+                    opacity: { value: 0.5, random: true },
+                    size: { value: 3, random: true },
+                    line_linked: { enable: true, distance: 150, color: "#00e6cc", opacity: 0.4, width: 1 },
+                    move: { enable: true, speed: 2, direction: "none", random: true, straight: false, out_mode: "out" }
+                },
+                interactivity: {
+                    detect_on: "canvas",
+                    events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } }
+                }
+            });
+        });
 
-// Global variables
-let player;
-let currentTrack = null;
+        // Replace with your YouTube Data API v3 key
+        const API_KEY = "AIzaSyA6Wz0p2a48EANdwqKh7Q7fbdKXmpWUJag";
 
-// DOM Elements
-const searchInput = document.getElementById('search-input');
-const resultsContainer = document.getElementById('results-container');
-const nowPlayingImg = document.getElementById('now-playing-img');
-const nowPlayingTitle = document.getElementById('now-playing-title');
-const nowPlayingArtist = document.getElementById('now-playing-artist');
-const playPauseBtn = document.getElementById('play-pause-btn');
-const currentTimeEl = document.getElementById('current-time');
-const totalTimeEl = document.getElementById('total-time');
-const progressBar = document.getElementById('progress-bar');
-const progressFill = document.getElementById('progress-fill');
+        // Global variables
+        let player;
+        let currentTrack = null;
 
-// Initialize YouTube Player
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
-    height: '0',
-    width: '0',
-    playerVars: {
-      playsinline: 1,
-      modestbranding: 1,
-      rel: 0
-    },
-    events: {
-      'onReady': () => player.setVolume(50),
-      'onStateChange': onPlayerStateChange
-    }
-  });
-}
+        // DOM Elements
+        const searchInput = document.getElementById('search-input');
+        const searchButton = document.getElementById('search-button');
+        const resultsContainer = document.getElementById('results-container');
+        const nowPlayingImg = document.getElementById('now-playing-img');
+        const nowPlayingTitle = document.getElementById('now-playing-title');
+        const nowPlayingArtist = document.getElementById('now-playing-artist');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const currentTimeEl = document.getElementById('current-time');
+        const totalTimeEl = document.getElementById('total-time');
+        const progressBar = document.getElementById('progress-bar');
+        const progressFill = document.getElementById('progress-fill');
 
-function onPlayerStateChange(event) {
-  if (event.data === YT.PlayerState.PLAYING) {
-    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-    updateProgressBar();
-  } else {
-    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
-  }
-}
+        // Initialize YouTube Player
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                playerVars: {
+                    playsinline: 1,
+                    modestbranding: 1,
+                    rel: 0
+                },
+                events: {
+                    'onReady': () => player.setVolume(50),
+                    'onStateChange': onPlayerStateChange
+                }
+            });
+        }
 
-// Update progress bar
-function updateProgressBar() {
-  if (player && player.getDuration) {
-    const currentTime = player.getCurrentTime();
-    const duration = player.getDuration();
+        function onPlayerStateChange(event) {
+            if (event.data === YT.PlayerState.PLAYING) {
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                playPauseBtn.classList.add('playing');
+                updateProgressBar();
+            } else {
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                playPauseBtn.classList.remove('playing');
+            }
+        }
 
-    currentTimeEl.textContent = formatTime(currentTime);
-    totalTimeEl.textContent = formatTime(duration);
+        // Update progress bar
+        function updateProgressBar() {
+            if (player && player.getDuration) {
+                const currentTime = player.getCurrentTime();
+                const duration = player.getDuration();
 
-    const progressPercent = (currentTime / duration) * 100;
-    progressFill.style.width = `${progressPercent}%`;
+                currentTimeEl.textContent = formatTime(currentTime);
+                totalTimeEl.textContent = formatTime(duration);
 
-    if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-      requestAnimationFrame(updateProgressBar);
-    }
-  }
-}
+                const progressPercent = (currentTime / duration) * 100;
+                progressFill.style.width = `${progressPercent}%`;
 
-function formatTime(time) {
-  const minutes = Math.floor(time / 60);
-  const seconds = Math.floor(time % 60);
-  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-}
+                if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+                    requestAnimationFrame(updateProgressBar);
+                }
+            }
+        }
 
-// Search for music directly with YouTube Data API
-async function searchMusic(query) {
-  if (!query) return;
+        function formatTime(time) {
+            const minutes = Math.floor(time / 60);
+            const seconds = Math.floor(time % 60);
+            return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
 
-  try {
-    const response = await fetch(
-      `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&q=${encodeURIComponent(query)}&key=${API_KEY}`
-    );
-    const data = await response.json();
-    displayResults(data.items || []);
-  } catch (error) {
-    console.error('Search error:', error);
-  }
-}
+        // Search for music directly with YouTube Data API
+        async function searchMusic(query) {
+            if (!query) return;
 
-function displayResults(results) {
-  resultsContainer.innerHTML = '';
+            try {
+                const response = await fetch(
+                    `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=20&q=${encodeURIComponent(query + " music")}&key=${API_KEY}`
+                );
+                const data = await response.json();
+                displayResults(data.items || []);
+            } catch (error) {
+                console.error('Search error:', error);
+            }
+        }
 
-  results.forEach(item => {
-    const videoId = item.id.videoId;
-    const title = item.snippet.title;
-    const channel = item.snippet.channelTitle;
-    const thumbnail = item.snippet.thumbnails.medium.url;
+        function displayResults(results) {
+            resultsContainer.innerHTML = '';
 
-    const trackElement = document.createElement('div');
-    trackElement.className = 'track-card';
-    trackElement.innerHTML = `
-      <div class="track-image">
-        <img src="${thumbnail}" alt="${title}" style="width:100%;height:100%;object-fit:cover">
-        <div class="play-btn" data-id="${videoId}">
-          <i class="fas fa-play"></i>
-        </div>
-      </div>
-      <div class="track-info">
-        <div class="track-title">${title}</div>
-        <div class="track-artist">${channel}</div>
-      </div>
-    `;
+            results.forEach(item => {
+                const videoId = item.id.videoId;
+                const title = item.snippet.title;
+                const channel = item.snippet.channelTitle;
+                const thumbnail = item.snippet.thumbnails.medium.url;
 
-    trackElement.addEventListener('click', () => {
-      playTrack(videoId, title, channel, thumbnail);
-    });
+                const trackElement = document.createElement('div');
+                trackElement.className = 'track-card glass';
+                trackElement.innerHTML = `
+                    <div class="track-image">
+                        <img src="${thumbnail}" alt="${title}">
+                        <div class="play-btn" data-id="${videoId}">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="track-info">
+                        <div class="track-title">${title}</div>
+                        <div class="track-artist">${channel}</div>
+                    </div>
+                `;
 
-    resultsContainer.appendChild(trackElement);
-  });
-}
+                trackElement.addEventListener('click', () => {
+                    playTrack(videoId, title, channel, thumbnail);
+                });
 
-function playTrack(videoId, title, artist, thumbnail) {
-  currentTrack = { videoId, title, artist, thumbnail };
-  player.loadVideoById(videoId);
+                resultsContainer.appendChild(trackElement);
+            });
+        }
 
-  nowPlayingTitle.textContent = title;
-  nowPlayingArtist.textContent = artist;
+        function playTrack(videoId, title, artist, thumbnail) {
+            currentTrack = { videoId, title, artist, thumbnail };
+            player.loadVideoById(videoId);
 
-  nowPlayingImg.innerHTML = '';
-  const img = document.createElement('img');
-  img.src = thumbnail;
-  img.alt = title;
-  img.style.width = '100%';
-  img.style.height = '100%';
-  img.style.objectFit = 'cover';
-  nowPlayingImg.appendChild(img);
-}
+            nowPlayingTitle.textContent = title;
+            nowPlayingArtist.textContent = artist;
 
-// Event listeners
-searchInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
-    searchMusic(searchInput.value);
-  }
-});
+            nowPlayingImg.innerHTML = '';
+            const img = document.createElement('img');
+            img.src = thumbnail;
+            img.alt = title;
+            nowPlayingImg.appendChild(img);
+            
+            // Add playing animation
+            nowPlayingImg.classList.add('playing');
+        }
 
-playPauseBtn.addEventListener('click', () => {
-  if (player && player.getPlayerState) {
-    const state = player.getPlayerState();
-    if (state === YT.PlayerState.PLAYING) {
-      player.pauseVideo();
-    } else {
-      player.playVideo();
-    }
-  }
-});
+        // Event listeners
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchMusic(searchInput.value);
+            }
+        });
 
-progressBar.addEventListener('click', (e) => {
-  if (player && player.getDuration) {
-    const rect = progressBar.getBoundingClientRect();
-    const percent = (e.clientX - rect.left) / rect.width;
-    const newTime = player.getDuration() * percent;
-    player.seekTo(newTime, true);
-  }
-});
+        searchButton.addEventListener('click', () => {
+            searchMusic(searchInput.value);
+        });
 
-// Initialize with trending/popular search
-window.addEventListener('load', () => {
-  searchMusic('trending music');
-});
+        playPauseBtn.addEventListener('click', () => {
+            if (player && player.getPlayerState) {
+                const state = player.getPlayerState();
+                if (state === YT.PlayerState.PLAYING) {
+                    player.pauseVideo();
+                } else {
+                    player.playVideo();
+                }
+            }
+        });
 
-// Hidden YouTube iframe
-const playerElement = document.createElement('div');
-playerElement.id = 'player';
-playerElement.style.display = 'none';
-document.body.appendChild(playerElement);
-</script>
+        progressBar.addEventListener('click', (e) => {
+            if (player && player.getDuration) {
+                const rect = progressBar.getBoundingClientRect();
+                const percent = (e.clientX - rect.left) / rect.width;
+                const newTime = player.getDuration() * percent;
+                player.seekTo(newTime, true);
+            }
+        });
 
+        // Initialize with trending/popular search
+        window.addEventListener('load', () => {
+            searchMusic('trending music');
+        });
+
+        // Hidden YouTube iframe
+        const playerElement = document.createElement('div');
+        playerElement.id = 'player';
+        playerElement.style.display = 'none';
+        document.body.appendChild(playerElement);
+    </script>
 </body>
 </html>
